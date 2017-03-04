@@ -6,7 +6,8 @@ param(
     [string]$crossgen_path = $null, 
     [string]$runtime = "win7-x64",
     [string]$sdk_version = "1.1.0-preview1-001100-00",
-    [string]$sdk_path = $null)
+    [string]$sdk_path = $null,
+    [string]$dotnet_dir = $null)
 
 $ErrorActionPreference = "Stop"
 
@@ -14,7 +15,11 @@ $lib_paths = @()
 
 $excludes = @("MusicStore.dll")
 
-$dotnet_dir = (Get-Item (Get-Command dotnet).Path).Directory
+if ($dotnet_dir -eq $null) {
+    $dotnet_dir = (Get-Item (Get-Command dotnet).Path).Directory
+}
+
+# $dotnet_dir = $dotnet_dir == null ? (Get-Item (Get-Command dotnet).Path).Directory : $dotnet_dir
 $config = (Get-Content MusicStore.runtimeconfig.json -Raw) | ConvertFrom-Json
 $shared_fx_version = $config.runtimeOptions.framework.version
 $shared_fx_path = [io.path]::combine($dotnet_dir, "shared\Microsoft.NETCore.App", $shared_fx_version)

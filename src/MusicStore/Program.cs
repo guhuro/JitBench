@@ -1,4 +1,5 @@
 using System;
+using System.Data.SqlClient;
 using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
@@ -38,6 +39,7 @@ namespace MusicStore
             Console.WriteLine("Server started in {0}ms", serverStartupTime);
             Console.WriteLine();
 
+            long r;
             using (var client = new HttpClient())
             {
                 Console.WriteLine("Starting request to http://localhost:5000");
@@ -47,44 +49,17 @@ namespace MusicStore
                 var firstRequestTime = requestTime.ElapsedMilliseconds;
 
                 Console.WriteLine("Response: {0}", response.StatusCode);
-                Console.WriteLine("Request took {0}ms", firstRequestTime);
-                Console.WriteLine();
-                Console.WriteLine("Cold start time (server start + first request time): {0}ms", serverStartupTime + firstRequestTime);
-                Console.WriteLine();
-                Console.WriteLine();
-                
-                var minRequestTime = long.MaxValue;
-                var maxRequestTime = long.MinValue;
-                var averageRequestTime = 0.0;
-
-                Console.WriteLine("Running 100 requests");
-                for(int i = 1; i <= 100; ++i)
-                {
-                    requestTime.Restart();
-                    response = client.GetAsync("http://localhost:5000").Result;
-                    requestTime.Stop();
-
-                    var requestTimeElapsed = requestTime.ElapsedMilliseconds;
-                    if (requestTimeElapsed < minRequestTime)
-                    {
-                        minRequestTime = requestTimeElapsed;
-                    }
-
-                    if (requestTimeElapsed > maxRequestTime)
-                    {
-                        maxRequestTime = requestTimeElapsed;
-                    }
-
-                    // Rolling average of request times
-                    averageRequestTime = (averageRequestTime * ((i - 1.0) / i)) + (requestTimeElapsed * (1.0 / i));
-                }
-
-                Console.WriteLine("Steadystate min response time: {0}ms", minRequestTime);
-                Console.WriteLine("Steadystate max response time: {0}ms", maxRequestTime);
-                Console.WriteLine("Steadystate average response time: {0}ms", (int)averageRequestTime);
+                Console.WriteLine("Request took {0}ms", requestTime.ElapsedMilliseconds);
+                r = requestTime.ElapsedMilliseconds;
             }
 
             Console.WriteLine();
+            
+            using (StreamWriter file = new StreamWriter(File.Create(@"measures.txt")))
+            {
+                file.WriteLine(totalTime.ElapsedMilliseconds + " " + r);
+                Console.WriteLine("Startup time and request time writen to measures.txt.");
+            }
         }
     }
 }
