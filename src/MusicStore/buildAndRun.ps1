@@ -1,0 +1,1 @@
+dotnet restore; dotnet publish -c Release -f netcoreapp10; cd .\bin\Release\netcoreapp1.0\publish\; .\Invoke-Crossgen.ps1; &'C:\Program Files\dotnet\dotnet.exe' .\MusicStore.dll; cd ..\..\..\..  

@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Diagnostics;
 using System.Net.Http;
 using Microsoft.AspNetCore.Hosting;
@@ -11,6 +12,7 @@ namespace MusicStore
     {
         public static void Main(string[] args)
         {
+            //Console.WriteLine("Empezamo a medir startup");
             var totalTime = Stopwatch.StartNew();
 
             var config = new ConfigurationBuilder()
@@ -67,6 +69,13 @@ namespace MusicStore
             }
 
             Console.WriteLine();
+            
+            //using (StreamWriter file = new StreamWriter(File.Create(@"C:\Users\t-guhuro\Source\Repos\JitBench\src\MusicStore\out.txt")))
+            using (StreamWriter file = new StreamWriter(File.Create(@"out.txt")))
+            {
+                file.WriteLine(totalTime.ElapsedMilliseconds);
+                Console.WriteLine("Startup time writen to out.txt.");
+            }
         }
     }
 }
