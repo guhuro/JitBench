@@ -58,6 +58,7 @@ namespace MusicStore
             Console.WriteLine("Server started in {0}ms", totalTime.ElapsedMilliseconds);
             Console.WriteLine();
 
+            long r;
             using (var client = new HttpClient())
             {
                 Console.WriteLine("Starting request to http://localhost:5000");
@@ -66,6 +67,7 @@ namespace MusicStore
                 requestTime.Stop();
                 Console.WriteLine("Response: {0}", response.StatusCode);
                 Console.WriteLine("Request took {0}ms", requestTime.ElapsedMilliseconds);
+                r = requestTime.ElapsedMilliseconds;
             }
 
             Console.WriteLine();
@@ -73,8 +75,8 @@ namespace MusicStore
             //using (StreamWriter file = new StreamWriter(File.Create(@"C:\Users\t-guhuro\Source\Repos\JitBench\src\MusicStore\out.txt")))
             using (StreamWriter file = new StreamWriter(File.Create(@"out.txt")))
             {
-                file.WriteLine(totalTime.ElapsedMilliseconds);
-                Console.WriteLine("Startup time writen to out.txt.");
+                file.WriteLine(totalTime.ElapsedMilliseconds + " " + r);
+                Console.WriteLine("Startup time and request time writen to out.txt.");
             }
         }
     }
